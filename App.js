@@ -1,12 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import Home from './com/lifelogs/screens/Home';
+import SignUp from './com/lifelogs/screens/member/SignUp';
+
+import { NavigationContainer } from '@react-navigation/native';
+import BottomTabNavi from './com/lifelogs/navigations/BottomTabNavi';
+import MainStackNavi from './com/lifelogs/navigations/StackNavi';
+
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+
+    <NavigationContainer>
+    <BottomTabNavi/>
+    </NavigationContainer>
+
   );
 }
 
