@@ -16,6 +16,7 @@ import Tdata from '../../../testData.json'
 import Card from "../components/Card";
 
 import Storage from "../utils/Storage";
+import { firebase_db } from "../functions/FireBaseConfig";
 
 
 const WIDTH = Dimensions.get('screen').width
@@ -28,7 +29,10 @@ const Home = ({navigation}) =>{
 const a2 = ()=>{
   Storage.get("login").then((e)=>{console.log(e)}).catch((e)=>{console.log(error)});
 }
+const a3 = () =>{
+  firebase_db.storage()
 
+}
 
 useEffect(()=>{
   setTimeout(()=>{

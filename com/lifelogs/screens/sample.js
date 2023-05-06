@@ -2,54 +2,56 @@ import {Pressable,Text,StyleSheet, Image,SafeAreaView,TextInput, TouchableOpacit
 import React,{useState,useEffect} from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
-import { getStorage,ref,getDownloadURL,uploadBytesResumable } from "firebase/storage";
+
 
 import * as ImagePicker from 'expo-image-picker';
-import storages, { articleRef,imgRef,uploadBytes } from "../functions/FireBaseConfig";
-import { imageUpload } from "../functions/FileBaseStorage";
+import storage, { articleRef,imgRef,getDownloadURL } from "../functions/FireBaseConfig";
+import { getImage } from "../functions/FileBaseStorage";
 
 export default function AddPost({ navigation, route }) {
   // 이미지 
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
-  const [body,setBody] = useState("")
+  const [body, setBody] = useState("");
   const [image, setImage] = useState(null);
-  const [uploading, setUploading] = useState(false);
+  const [article,setArticle] = useState({
+  })
 
 
-//   const UploadImg = async() => {
-// //  권한 확인 
-//     if(!status?.granted){
-//       const permission = await requestPermission();
-//       if(!permission.granted){
-//         return null;
-//       }
-//     }
-//     // 이미지 업로드 기능 수행 
-//     const result = await ImagePicker.launchImageLibraryAsync({
-//       mediaTypes:ImagePicker.MediaTypeOptions.Images,
-//       allowsEditing:false,
-//       quality:1,
-//       aspect:[1,1]
-//     });
-
-//     if(result.canceled){
-//       return null;
-//     }
-//     setImage(result.uri)
-
-
-//     console.log(image);
-//     const storageRef = ref(storages, '/article/some.jpg');
-      
-//     // 'file' comes from the Blob or File API
-//     uploadBytesResumable(storageRef, result).then((snapshot) => {
-//       console.log('Uploaded a blob or file!');
-//     });
-    
-//   }
+  const UploadImg = () => {
    
+  //권한 등록.
+      const uploadImage = async () => {
+          if(!status?.granted){
+              const permission = await requestPermission();
+              if(!permission.granted){
+                  return null;
+              }
+          }
+  // 이미지 업로드 기능.
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [4, 3],
+          quality: 1,
+        }); // 갤러리 불러오기.
+          if(result.canceled){
+              return null;// 이미지 업로드 취소한 경우.
+          }
 
-const pickImage = async () => {
+  
+      };
+      return (
+          <SafeAreaView style={styles.imgBox}>
+          <Pressable style={styles.uploadButton} onPress={uploadImage()}>
+              <Text style={styles.imgIcon}>이미지 업로드</Text>
+          </Pressable>
+  
+          </SafeAreaView>
+  
+      );
+  } 
+
+  const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -58,57 +60,38 @@ const pickImage = async () => {
       quality: 1,
     });
 
-    const source = { uri: result.uri };
-    console.log(source);
-    setImage(source);
-
-};
-
-const uploadImage = async () => {
-Alert.alert("aa")
-  setUploading(true);
-  const response = await fetch(image.uri)
-  const blob = await response.blob();
-  const filename = image.uri.substring(image.uri.lastIndexOf('/') + 1);
-  console.log(filename)
-  // var ref = storages.ref('article/').child(filename).put(blob);
-  const storageRef = ref(storages, "article/"+filename);
-  uploadBytesResumable(storageRef, blob).then((snapshot) => {
-    console.log('Uploaded a blob or file!');
-  }).catch((e)=>{console.log(error)});
-
-  // try {
-  //   await ref;
-  // } catch (e) {
-  //   console.error(e);
-  // }
-  // setUploading(false);
-  // Alert.alert(
-  //   'Photo uploaded!!!',
-  // );
-  // setImage(null);
-};
-
-  
-
+    if (!result.canceled) {
+     
+      setImage(result.uri);
+    }
+    // 날짜 / autoincrement / 로그인 > 회원정보
+   
+     
+  }
   
   const addData = async () => {
    // restApi연동 예정
 }
 
+
+
+
   useEffect(() => {
     navigation.setOptions({
       title: '게시물 작성'
     })
+
+
+
   }, []);
 
-
-
-  const onPress = async() => {
+  function onPress() {
     Alert.alert('', '글 작성이 완료되었습니다.')
-      // navigation.navigate('Home')
-      uploadImage()
+    console.log({body})
+    console.log("img: ", image);
+    getImage(image);
 
+      navigation.navigate('Home')
   }
 
     return(
@@ -119,16 +102,18 @@ Alert.alert("aa")
             <Ionicons name="camera-outline" size={48} color="#4d4d4d" />
             <Text style={{ fontSize:14, fontWeight: '500', color: '#4d4d4d' }} >사진업로드</Text>
           </TouchableOpacity>
-          {image && <Image source={{ uri: image.uri }} style={{ width: 120, height: 120, borderRadius: 4 }} />}
+          {image && <Image source={{ uri: image }} style={{ width: 120, height: 120, borderRadius: 4 }} />}
         </View>
 
+
+    
       <View style={{ width: '95%',alignSelf:'center',height: '100%', marginTop:20, borderTopWidth:1 }} >
         <TextInput style={styles.input2} onChangeText={setBody} value={body} 
             placeholder="내용을 입력해주세요" multiline maxLength={40}/>
       </View>
     
   </SafeAreaView>
-     <TouchableOpacity style={{ height: 40, width: 100 ,position: 'absolute', bottom: 40,right: 40, backgroundColor: '#FF7B00', display: 'flex', alignItems:"center", justifyContent: 'center', borderRadius: 8 }} onPress={() => uploadImage()}>
+     <TouchableOpacity style={{ height: 40, width: 100 ,position: 'absolute', bottom: 40,right: 40, backgroundColor: '#FF7B00', display: 'flex', alignItems:"center", justifyContent: 'center', borderRadius: 8 }} onPress={() => onPress() }>
       <Text style={{ color: 'white', fontWeight: '600' }} >추가하기</Text>
       </TouchableOpacity>
   </>

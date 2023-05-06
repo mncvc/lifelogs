@@ -52,7 +52,7 @@ return(
         {/* <Image source={{uri:route.params.img[0]}} style={{width:'100%',height:'100%'}}></Image> */}
       </View>
       <View style={styles.img}>
-        <Image source={{uri:route.params.img[1]}} style={{width:'100%',height:'100%'}}></Image>
+        <Image source={{uri:'gs://lifelogs-e0f2e.appspot.com/article/img1.jpeg'}} style={{width:'100%',height:'100%'}}></Image>
       </View>
       </ScrollView>
 {/* 디자인 기능 수정 필요 listMap */}
