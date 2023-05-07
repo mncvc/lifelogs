@@ -1,7 +1,7 @@
 import {Pressable,Text,StyleSheet, Image,SafeAreaView,TextInput, TouchableOpacity,View, TouchableWithoutFeedback, Keyboard, Button, Alert} from "react-native";
 import React,{useState,useEffect} from 'react'
 import Ionicons from '@expo/vector-icons/Ionicons'
-
+import axios from "axios";
 import { getStorage,ref,getDownloadURL,uploadBytesResumable } from "firebase/storage";
 
 import * as ImagePicker from 'expo-image-picker';
@@ -12,12 +12,12 @@ import IsCheckLogin from "../functions/IsCheckLogin";
 
 export default function AddPost({ navigation, route }) {
   // 이미지 
+  const [user,setUser] = useState({});
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
   const [body,setBody] = useState("")
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [blog,setBlog] = useState({
-  });
+
 
 
   useEffect(() => {
@@ -26,14 +26,16 @@ export default function AddPost({ navigation, route }) {
      
     })
 console.log("33333333")
-    // let id = Storage.get("login").then((e)=>{
-    //   console.log(e.id)
-    // }).catch((e)=>{
-    //   console.log(error)
-    // })
-    
-let a = IsCheckLogin.getId().then((e)=>{console.log("login : ",e)}).catch((e)=>{console.log(error)});
-console.log("whe",a);
+    Storage.get("login").then((e)=>{
+      console.log(e.id)
+      setUser(e)
+
+    }).catch((e)=>{
+      console.log(error)
+    }).finally((e)=>{
+     return e;
+    })
+
   }, []);
 
 
@@ -73,13 +75,26 @@ const uploadImage = async () => {
     .then((url) => {
       setImage(url)
       console.log(url)
+let blog = {
+    body: body,
+    writter: user.id,
+    likes: 0,
+    view: 0,
+    img_url: url
+    }
+    console.log(blog);
+
+      axios.post('http://localHost:8080/article/add-post',blog).then((e)=>{
+        console.log(e)
+      }).catch((e)=>{
+        console.log(error.code)
+      });
+
     })
     .catch((e) => {
       console.log(error.code)
       console.log("실패")
   }).finally((e)=>{
-    console.log("path: ",image)
-    console.log("body : ",body)
   });
 
   });
@@ -97,8 +112,10 @@ const uploadImage = async () => {
   const onPress = () => {
     Alert.alert('', '글 작성이 완료되었습니다.')
       navigation.navigate('Home')
-       uploadImage();
+      uploadImage();
    
+     
+      
   }
 
     return(

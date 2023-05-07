@@ -30,6 +30,7 @@ useEffect(()=>{
   setTimeout(()=>{
     axios.get(`http://localHost:8080/article`).then((response)=>{
       setBlogs(response.data)
+      console.logg(response.data)
     }
     ).catch((response)=>{console.log(error)});
 

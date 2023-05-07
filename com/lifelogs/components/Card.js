@@ -26,7 +26,7 @@ const Card =({state,navigation}) =>{
   })
   const data = state;
 
-  const storageRef = ref(storages, state.images[0].img_url);
+  const storageRef = ref(storages, state.img_url);
   // Get the download URL
   getDownloadURL(storageRef)
     .then((url) => {
