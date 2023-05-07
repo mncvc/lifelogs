@@ -6,15 +6,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Storage = {
   
   async get(key) {
+    
     try {
-      const rawData = await AsyncStorage.getItem(key);
-      if (!rawData) {
-        throw new Error('No saved ' + key);
-      }
-      const savedData = JSON.parse(rawData);
-      return savedData;
+      const raw = await AsyncStorage.getItem(key);
+      const parsed = JSON.parse(raw);
+      return parsed;
     } catch (e) {
-      throw new Error('Failed to load ' + key);
+      throw new Error('Failed to load logs');
     }
   },
   async set(key,data) {

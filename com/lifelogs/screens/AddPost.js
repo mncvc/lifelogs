@@ -7,6 +7,8 @@ import { getStorage,ref,getDownloadURL,uploadBytesResumable } from "firebase/sto
 import * as ImagePicker from 'expo-image-picker';
 import storages, { articleRef,imgRef,uploadBytes } from "../functions/FireBaseConfig";
 import { imageUpload } from "../functions/FileBaseStorage";
+import Storage from "../utils/Storage";
+import IsCheckLogin from "../functions/IsCheckLogin";
 
 export default function AddPost({ navigation, route }) {
   // 이미지 
@@ -14,40 +16,28 @@ export default function AddPost({ navigation, route }) {
   const [body,setBody] = useState("")
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [blog,setBlog] = useState({
+  });
 
 
-//   const UploadImg = async() => {
-// //  권한 확인 
-//     if(!status?.granted){
-//       const permission = await requestPermission();
-//       if(!permission.granted){
-//         return null;
-//       }
-//     }
-//     // 이미지 업로드 기능 수행 
-//     const result = await ImagePicker.launchImageLibraryAsync({
-//       mediaTypes:ImagePicker.MediaTypeOptions.Images,
-//       allowsEditing:false,
-//       quality:1,
-//       aspect:[1,1]
-//     });
-
-//     if(result.canceled){
-//       return null;
-//     }
-//     setImage(result.uri)
-
-
-//     console.log(image);
-//     const storageRef = ref(storages, '/article/some.jpg');
-      
-//     // 'file' comes from the Blob or File API
-//     uploadBytesResumable(storageRef, result).then((snapshot) => {
-//       console.log('Uploaded a blob or file!');
-//     });
+  useEffect(() => {
+    navigation.setOptions({
+      title: '게시물 작성'
+     
+    })
+console.log("33333333")
+    // let id = Storage.get("login").then((e)=>{
+    //   console.log(e.id)
+    // }).catch((e)=>{
+    //   console.log(error)
+    // })
     
-//   }
-   
+let a = IsCheckLogin.getId().then((e)=>{console.log("login : ",e)}).catch((e)=>{console.log(error)});
+console.log("whe",a);
+  }, []);
+
+
+
 
 const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -63,52 +53,52 @@ const pickImage = async () => {
     setImage(source);
 
 };
-
 const uploadImage = async () => {
-Alert.alert("aa")
+
   setUploading(true);
   const response = await fetch(image.uri)
   const blob = await response.blob();
   const filename = image.uri.substring(image.uri.lastIndexOf('/') + 1);
-  console.log(filename)
-  // var ref = storages.ref('article/').child(filename).put(blob);
-  const storageRef = ref(storages, "article/"+filename);
+  const file = "article/" + filename;
+  const storageRef = ref(storages, file);
+ 
+
   uploadBytesResumable(storageRef, blob).then((snapshot) => {
     console.log('Uploaded a blob or file!');
-  }).catch((e)=>{console.log(error)});
 
-  // try {
-  //   await ref;
-  // } catch (e) {
-  //   console.error(e);
-  // }
-  // setUploading(false);
-  // Alert.alert(
-  //   'Photo uploaded!!!',
-  // );
-  // setImage(null);
+  }).catch((e)=>{
+    console.log(error)
+  }).finally((e)=>{
+    getDownloadURL(storageRef)
+    .then((url) => {
+      setImage(url)
+      console.log(url)
+    })
+    .catch((e) => {
+      console.log(error.code)
+      console.log("실패")
+  }).finally((e)=>{
+    console.log("path: ",image)
+    console.log("body : ",body)
+  });
+
+  });
+  
+  
 };
 
   
 
   
-  const addData = async () => {
-   // restApi연동 예정
-}
-
-  useEffect(() => {
-    navigation.setOptions({
-      title: '게시물 작성'
-    })
-  }, []);
 
 
 
-  const onPress = async() => {
+
+  const onPress = () => {
     Alert.alert('', '글 작성이 완료되었습니다.')
-      // navigation.navigate('Home')
-      uploadImage()
-
+      navigation.navigate('Home')
+       uploadImage();
+   
   }
 
     return(
@@ -128,7 +118,7 @@ Alert.alert("aa")
       </View>
     
   </SafeAreaView>
-     <TouchableOpacity style={{ height: 40, width: 100 ,position: 'absolute', bottom: 40,right: 40, backgroundColor: '#FF7B00', display: 'flex', alignItems:"center", justifyContent: 'center', borderRadius: 8 }} onPress={() => uploadImage()}>
+     <TouchableOpacity style={{ height: 40, width: 100 ,position: 'absolute', bottom: 40,right: 40, backgroundColor: '#FF7B00', display: 'flex', alignItems:"center", justifyContent: 'center', borderRadius: 8 }} onPress={() => onPress()}>
       <Text style={{ color: 'white', fontWeight: '600' }} >추가하기</Text>
       </TouchableOpacity>
   </>

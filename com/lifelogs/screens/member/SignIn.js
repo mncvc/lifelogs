@@ -14,13 +14,12 @@ function SignIn({navigation}){
 
 
 const onClickLogin = () =>{
-
-  console.log({userId},":::",{pwd})
   axios.get(`http://localHost:8080/member/login?userId=${userId}&pwd=${pwd}`)
     .then(function (response) {
-      console.log(response.data.id)
       isLogin = true;
+      console.log(response.data.id)
       Storage.set("login",response.data);
+      
     Alert.alert("로그인 Ok")
     navigation.navigate('Home')
     })

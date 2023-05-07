@@ -10,13 +10,15 @@ const WIDTH = Dimensions.get('screen').width;
 const Detail = ({navigation, route}) => {
 
 const [state,setState] = useState({});
-
+const [images,setImages] = useState([]);
 const idx = route.params.idx;
 
 const getArticle = () =>{
   axios.get(`http://localHost:8080/article/detail/${idx}`).then((response)=> {
   setState(response.data);
-  console.log("ㅁㄴㅇ",response.data);
+  setImages(response.data.images);
+
+  // console.log("ㅁㄴㅇ",response.data);
 }).catch((response)=>{console.log(error)})
 
 }
@@ -24,7 +26,7 @@ const getArticle = () =>{
 
 useEffect(()=>{
   getArticle();
-
+console.log(route.params)
 
 },[])
 
@@ -52,7 +54,7 @@ return(
         {/* <Image source={{uri:route.params.img[0]}} style={{width:'100%',height:'100%'}}></Image> */}
       </View>
       <View style={styles.img}>
-        <Image source={{uri:'gs://lifelogs-e0f2e.appspot.com/article/img1.jpeg'}} style={{width:'100%',height:'100%'}}></Image>
+        {/* <Image source={{uri:'gs://lifelogs-e0f2e.appspot.com/article/img1.jpeg'}} style={{width:'100%',height:'100%'}}></Image> */}
       </View>
       </ScrollView>
 {/* 디자인 기능 수정 필요 listMap */}

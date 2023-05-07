@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-
 import { Button, Image, SafeAreaView,
   ScrollView,
   ScrollViewBase,
@@ -11,41 +10,43 @@ TouchableOpacity,
 View
 } from "react-native";
 import { Dimensions } from "react-native";
-
-import Tdata from '../../../testData.json'
 import Card from "../components/Card";
-
 import Storage from "../utils/Storage";
-import { firebase_db } from "../functions/FireBaseConfig";
+import storages, { firebase_db } from "../functions/FireBaseConfig";
 
+import { getStorage,ref,getDownloadURL } from "firebase/storage";
 
 const WIDTH = Dimensions.get('screen').width
 
 
 const Home = ({navigation}) =>{
 
-  const [blogs,setBlogs] = useState([{}])
+  const [blogs,setBlogs] = useState([])
+  const [login,setLogin] = useState({});
+  const [image,setImage] = useState(null);
 
-const a2 = ()=>{
-  Storage.get("login").then((e)=>{console.log(e)}).catch((e)=>{console.log(error)});
-}
-const a3 = () =>{
-  firebase_db.storage()
-
-}
 
 useEffect(()=>{
   setTimeout(()=>{
-
     axios.get(`http://localHost:8080/article`).then((response)=>{
-      // console.log("aaaaa:::",response.data)
       setBlogs(response.data)
     }
     ).catch((response)=>{console.log(error)});
 
   },3000)
+  // const storageRef = ref(storages, "article/img1.jpeg");
+  // // Get the download URL
+  // getDownloadURL(storageRef)
+  //   .then((url) => {
+  //     setImage(url);
+  //   })
+  //   .catch((e) => {
+  //     console.log(error.code)
+  // });
 
 },[])
+  
+
 
 
 
@@ -73,7 +74,6 @@ useEffect(()=>{
     </View>
 
       </View>
-
 
 {/* feed component 제작 */}
       <View style={styles.box}>

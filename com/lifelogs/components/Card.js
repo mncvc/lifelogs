@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect, useState} from "react";
 import { Button, Image, SafeAreaView,
   ScrollView,
   ScrollViewBase,
@@ -7,16 +7,35 @@ Text,
 View,
 TouchableOpacity
 } from "react-native";
-
+import storages from "../functions/FireBaseConfig";
+import { getStorage,ref,getDownloadURL } from "firebase/storage";
 
 
 
 
 const Card =({state,navigation}) =>{
+  const [image,setImage] = useState(null);
+  const [blog,setBlog] = useState({
+    writter: '',
+    content : '',
+    img : '',
+    likes: 0,
+    view : 0,
+    regdate : ''
 
-
+  })
   const data = state;
-  console.log(data)
+
+  const storageRef = ref(storages, state.images[0].img_url);
+  // Get the download URL
+  getDownloadURL(storageRef)
+    .then((url) => {
+      // console.log(url)
+      setImage(url);
+    })
+    .catch((e) => {
+      console.log(error.code)
+  });
 
   return(
     <TouchableOpacity onPress={() =>{navigation.navigate("Detail",data)}}>
@@ -40,7 +59,7 @@ const Card =({state,navigation}) =>{
             </View>
           </View>
               <View style ={styles.imageBox}>
-                {/* <Image source= {require(""+data.images[0].img_url)} style={styles.img}/> */}
+                <Image source= {{uri: image}} style={styles.img}/>
               </View>
         </View>
     </TouchableOpacity>
@@ -51,9 +70,6 @@ const Card =({state,navigation}) =>{
 
 
 const styles = StyleSheet.create({
-
-
-  
 
   a:{
     height:280,
