@@ -30,20 +30,11 @@ useEffect(()=>{
   setTimeout(()=>{
     axios.get(`http://localHost:8080/article`).then((response)=>{
       setBlogs(response.data)
-      console.logg(response.data)
     }
     ).catch((response)=>{console.log(error)});
 
   },3000)
-  // const storageRef = ref(storages, "article/img1.jpeg");
-  // // Get the download URL
-  // getDownloadURL(storageRef)
-  //   .then((url) => {
-  //     setImage(url);
-  //   })
-  //   .catch((e) => {
-  //     console.log(error.code)
-  // });
+
 
 },[])
   
@@ -78,9 +69,11 @@ useEffect(()=>{
 
 {/* feed component 제작 */}
       <View style={styles.box}>
-      {blogs.map((data,i) =>{
+      {
+      blogs.map((data,i) =>{
         return(<Card state = {data} key={i} navigation={navigation}></Card>)
-      })}    
+      })
+      }    
        
     
 

@@ -1,37 +1,57 @@
 import React, { useEffect,useState } from "react";
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Dimensions } from "react-native";
 import Banner from "../utils/Banner";
 import axios from "axios";
+import Storage from "../utils/Storage";
+
+
+
 
 const WIDTH = Dimensions.get('screen').width;
 
 
 const Detail = ({navigation, route}) => {
-
-const [state,setState] = useState({});
-const [images,setImages] = useState([]);
-const idx = route.params.idx;
-
-const getArticle = () =>{
-  axios.get(`http://localHost:8080/article/detail/${idx}`).then((response)=> {
-  setState(response.data);
-  setImages(response.data.images);
-
-  // console.log("ㅁㄴㅇ",response.data);
-}).catch((response)=>{console.log(error)})
-
-}
-
-
 useEffect(()=>{
-  getArticle();
+   route.params.view += 1;
 console.log(route.params)
+ axios.put(`http://localHost:8080/article/${route.params.idx}`,route.params).then((e)=>{
+
+ }).catch((e)=>{
+  console.log(error)
+ })
 
 },[])
 
 
-console.log("작성자 : ",state.writter)
+const [state,setState] = useState({});
+const [images,setImages] = useState([]);
+
+const isCheckId = () =>{
+  
+   Storage.get("login").then((e)=>{
+    if(route.params.writter ==e.id ){
+      getData(true);
+    }else {
+      getData(false);
+    }
+  }).catch((e)=>{
+    console.log(error.code)
+    getData(false)
+  })
+
+}
+const [isId, setIsId] = useState(false);
+
+const getData = (res) =>{
+  setIsId(res);
+}
+
+useEffect(()=>{
+isCheckId();
+
+
+},[])
 
 return(
 <SafeAreaView style={styles.container}>
@@ -51,7 +71,8 @@ return(
 
 <ScrollView horizontal={true} style={{width:'100%', flex:1}}>
       <View style={styles.img}>
-        {/* <Image source={{uri:route.params.img[0]}} style={{width:'100%',height:'100%'}}></Image> */}
+        <Image source={{uri:route.params.img_url}} style={{width:'100%',height:'100%'}}></Image>
+
       </View>
       <View style={styles.img}>
         {/* <Image source={{uri:'gs://lifelogs-e0f2e.appspot.com/article/img1.jpeg'}} style={{width:'100%',height:'100%'}}></Image> */}
@@ -66,20 +87,32 @@ return(
           <View style={{width:'40%',height:'100%',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between'}}>
             <View style={{flexDirection:'row'}}>
             <View style={{width:18,height:18,borderWidth:1,marginRight:8}}></View>
-            <Text>{route.params.like}</Text>
+            <Text>{route.params.likes}</Text>
             </View>
             <View style={{flexDirection:'row'}}>
             <View style={{width:18,height:18,borderWidth:1,marginRight:8}}></View>
-            <Text>{route.params.like}</Text>
+            <Text>{route.params.view}</Text>
             </View>
-            <View style={{width:18,height:18,borderWidth:1,marginRight:8}}></View> 
+            <View style={{flexDirection:'row'}}>
+            <View style={{width:18,height:18,borderWidth:1,marginRight:8}}>
+              {
+              isId? <View style = {{backgroundColor:'red',width:'100%',height:'100%'}}>
+                <TouchableOpacity onPress = {()=>{Alert.alert("삭제")}} style = {{backgroundColor:'red',width:'100%',height:'100%'}}></TouchableOpacity>
+              </View>:
+              <View style = {{width:'100%',height:'100%'}}></View>
+              // 회원 정보가 맞으면 삭제 버튼 생성.없으면 아무버튼 안생김.
+              }
+            </View>
+          
+            </View>
+            
         </View>
 
       
       </View>
       <View style={styles.bodyWrap}>
         <View style={styles.content}>
-          <Text>{route.params.content}</Text> 
+          <Text>{route.params.body}</Text> 
         </View>
 
           <View style={styles.commentWrap}>

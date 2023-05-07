@@ -26,16 +26,7 @@ const Card =({state,navigation}) =>{
   })
   const data = state;
 
-  const storageRef = ref(storages, state.img_url);
-  // Get the download URL
-  getDownloadURL(storageRef)
-    .then((url) => {
-      // console.log(url)
-      setImage(url);
-    })
-    .catch((e) => {
-      console.log(error.code)
-  });
+
 
   return(
     <TouchableOpacity onPress={() =>{navigation.navigate("Detail",data)}}>
@@ -59,7 +50,7 @@ const Card =({state,navigation}) =>{
             </View>
           </View>
               <View style ={styles.imageBox}>
-                <Image source= {{uri: image}} style={styles.img}/>
+                <Image source= {{uri: data.img_url}} style={styles.img}/>
               </View>
         </View>
     </TouchableOpacity>

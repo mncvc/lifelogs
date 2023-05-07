@@ -51,7 +51,6 @@ const pickImage = async () => {
     });
 
     const source = { uri: result.uri };
-    console.log(source);
     setImage(source);
 
 };
@@ -74,7 +73,6 @@ const uploadImage = async () => {
     getDownloadURL(storageRef)
     .then((url) => {
       setImage(url)
-      console.log(url)
 let blog = {
     body: body,
     writter: user.id,
@@ -82,7 +80,6 @@ let blog = {
     view: 0,
     img_url: url
     }
-    console.log(blog);
 
       axios.post('http://localHost:8080/article/add-post',blog).then((e)=>{
         console.log(e)
@@ -93,7 +90,6 @@ let blog = {
     })
     .catch((e) => {
       console.log(error.code)
-      console.log("실패")
   }).finally((e)=>{
   });
 
