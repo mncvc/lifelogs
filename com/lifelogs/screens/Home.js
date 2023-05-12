@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useIsFocused } from '@react-navigation/native';
 
 import { Button, Image, SafeAreaView,
   ScrollView,
@@ -24,7 +25,7 @@ const Home = ({navigation}) =>{
   const [blogs,setBlogs] = useState([])
   const [login,setLogin] = useState({});
   const [image,setImage] = useState(null);
-
+  const isFocused = useIsFocused();
 
 useEffect(()=>{
   setTimeout(()=>{
@@ -36,7 +37,7 @@ useEffect(()=>{
   },3000)
 
 
-},[])
+},[isFocused])
   
 
 

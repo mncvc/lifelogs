@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
@@ -39,6 +40,14 @@ const SignUp = ({navigation}) =>{
 
 
     if(isPwd){
+      let mem = {
+        id : id,
+        password : pwd
+      }
+        axios.post(`http://localHost:8080/member/signup`,mem).then((e)=>{
+          console.log(e)
+        }).catch((e)=>{console.log(error.code)})
+
       Alert.alert('회원가입이 완료 되었습니다.')
       navigation.navigate('Home')
     }
@@ -59,7 +68,7 @@ const SignUp = ({navigation}) =>{
     {/* 로고 */}
         <View style = {styles.inputBox}>
           <View style={styles.inputTextWrap}>
-            <TextInput  style = {styles.inputText} placeholder="user" value = {id} onChangeText={handleIdChange}></TextInput>
+            <TextInput  style = {styles.inputText} placeholder="user" value = {id} onChangeText={handleIdChange} autoCapitalize ='none' ></TextInput>
           </View>
           
           <View style={styles.inputTextWrap}>

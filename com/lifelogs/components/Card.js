@@ -26,10 +26,14 @@ const Card =({state,navigation}) =>{
   })
   const data = state;
 
+const onPress = () =>{
+  data.view += 1
+  navigation.navigate("Detail",data)
 
+}
 
   return(
-    <TouchableOpacity onPress={() =>{navigation.navigate("Detail",data)}}>
+    <TouchableOpacity onPress={() =>{onPress()}}>
       
       <View style={styles.a}>
 

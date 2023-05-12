@@ -5,6 +5,7 @@ import Banner from "../utils/Banner";
 import axios from "axios";
 import Storage from "../utils/Storage";
 
+import { useIsFocused } from '@react-navigation/native';
 
 
 
@@ -12,16 +13,18 @@ const WIDTH = Dimensions.get('screen').width;
 
 
 const Detail = ({navigation, route}) => {
+  const isFocused = useIsFocused();
+  const [likes, setLikes] = useState();
 useEffect(()=>{
-   route.params.view += 1;
-console.log(route.params)
+  isCheckId();
  axios.put(`http://localHost:8080/article/${route.params.idx}`,route.params).then((e)=>{
 
  }).catch((e)=>{
   console.log(error)
  })
+setLikes(route.params.likes);
 
-},[])
+},[isFocused])
 
 
 const [state,setState] = useState({});
@@ -47,11 +50,19 @@ const getData = (res) =>{
   setIsId(res);
 }
 
-useEffect(()=>{
-isCheckId();
 
 
-},[])
+const like = () =>{
+  route.params.likes += 1;
+  setLikes(route.params.likes);
+  console.log(route.params.likes)
+  axios.put(`http://localHost:8080/article/${route.params.idx}`,route.params).then((e)=>{
+  
+}).catch((e)=>{
+ console.log(error)
+})
+}
+
 
 return(
 <SafeAreaView style={styles.container}>
@@ -86,11 +97,15 @@ return(
         <View style={{width:'60%',height:'100%'}}></View>
           <View style={{width:'40%',height:'100%',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between'}}>
             <View style={{flexDirection:'row'}}>
-            <View style={{width:18,height:18,borderWidth:1,marginRight:8}}></View>
-            <Text>{route.params.likes}</Text>
+            <View style={{width:18,height:18,borderWidth:1,marginRight:8}}>
+            <TouchableOpacity style = {{width:'100%', height:'100%'}} onPress ={()=>{like()}}/>
+            </View>
+            <Text>{likes}</Text>
             </View>
             <View style={{flexDirection:'row'}}>
-            <View style={{width:18,height:18,borderWidth:1,marginRight:8}}></View>
+            <View style={{width:18,height:18,borderWidth:1,marginRight:8}}>
+             
+            </View>
             <Text>{route.params.view}</Text>
             </View>
             <View style={{flexDirection:'row'}}>
